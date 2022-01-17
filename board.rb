@@ -7,7 +7,7 @@ class Board
 
     def initialize
         @rows = Array.new(8) { Array.new }
-        # @null_piece = NullPiece.new
+        @null_piece = NullPiece
         @rows.each_with_index do |entire_row, row|
             col = 0
             if row == 0 || row == 1
@@ -66,9 +66,9 @@ class Board
             raise "No piece at start pos" 
         end
 
-        if self[end_pos] != nil
-            raise "Cannot move to end pos"
-        end
+        # if self[end_pos] != nil
+        #     raise "Cannot move to end pos"
+        # end
 
         piece = self[start_pos]
         self[end_pos] = piece
@@ -82,8 +82,8 @@ end
 if __FILE__ == $0
     board1 = Board.new
     # p board1.inspect
-    pos2 = [0,0]
-    pos1 = [2,0]
+    pos1 = [0,0]
+    pos2 = [2,0]
     p board1[pos1]
     p board1[pos2]
     board1.move_piece(pos1, pos2)
