@@ -1,5 +1,5 @@
 require 'byebug'
-require_relative 'null_piece'
+require_relative 'pieces'
 
 class Board
 
@@ -8,6 +8,10 @@ class Board
     def initialize
         @rows = Array.new(8) { Array.new }
         @null_piece = NullPiece
+        initialize_board
+    end
+
+    def initialize_board
         @rows.each_with_index do |entire_row, row|
             col = 0
             if row == 0 || row == 1
