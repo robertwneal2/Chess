@@ -12,8 +12,4 @@ class Piece
         [@color, @pos]
     end
 
-    def moves
-        []
-    end
-
 end
