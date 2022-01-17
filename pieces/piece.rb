@@ -1,6 +1,7 @@
 class Piece
     
-    attr_writer :pos
+    attr_reader, :color, :board
+    attr_accessor :pos
 
     def initialize(color, board, pos)
         @color = color
@@ -29,7 +30,8 @@ class Piece
     end
 
     def symbol
-
+        # subclass implements this with unicode chess char
+        raise NotImplementedError
     end
 
     private
