@@ -6,7 +6,7 @@ class Queen < Piece
     include Slideable
 
     def symbol
-        "B"
+        "Q"
     end
 
     private

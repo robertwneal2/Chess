@@ -10,7 +10,7 @@ class Piece
     end
 
     def inspect
-        [@color, @pos]
+        [color, symbol, pos]
     end
 
     def to_s

@@ -12,26 +12,40 @@ class Board
     end
 
     def initialize_board
+        piece_row = [Rook, Knight, Bishop, King, Queen, Bishop, Knight, Rook]
         @rows.each_with_index do |entire_row, row|
             col = 0
-            if row == 0 || row == 1
+            if row == 0
+                piece_row.each do |piece|
+                    color = :w
+                    pos = [row, col]
+                    entire_row << piece.new(color, self, pos)
+                    col += 1
+                end
+            elsif row == 1
                 8.times do 
                     color = :w
                     pos = [row, col]
-                    entire_row << Piece.new(color, self, pos)
+                    entire_row << Pawn.new(color, self, pos)
                     col += 1
                 end
-            elsif row == 6 || row == 7
-                8.times do 
+            elsif row == 7
+                piece_row.each do |piece|
                     color = :b
                     pos = [row, col]
-                    entire_row << Piece.new(color, self, pos)
+                    entire_row << piece.new(color, self, pos)
+                    col += 1
+                end
+            elsif row == 6
+                8.times do 
+                    color = :w
+                    pos = [row, col]
+                    entire_row << Pawn.new(color, self, pos)
                     col += 1
                 end
             else
                 8.times do 
                     entire_row << @null_piece
-                    col += 1
                 end
             end
         end
@@ -52,7 +66,7 @@ class Board
         @rows[row][col] = val
     end
 
-    def move_piece(start_pos, end_pos)
+    def move_piece(start_pos, end_pos, color)
         # debugger
         start_row, start_col = start_pos
         end_row, end_col = end_pos
@@ -60,7 +74,7 @@ class Board
 
         inputs.each do |input|
             if input < 0 || input > 7
-                raise "positions must be 0 - 7" 
+                raise "Positions must be 0 - 7" 
             end
         end
 
@@ -68,11 +82,14 @@ class Board
             raise "No piece at start pos" 
         end
 
-        # if self[end_pos] != nil
-        #     raise "Cannot move to end pos"
-        # end
+        if self[start_pos].color != color
+            raise "Can't move a piece that's not yours!"
+        end
 
-        # debugger
+        if !self[start_pos].moves.include?(end_pos)
+            raise "Invalid move!"
+        end
+
         piece = self[start_pos]
         piece.pos = end_pos
         self[end_pos] = piece
@@ -84,14 +101,12 @@ end
 
 if __FILE__ == $0
     board1 = Board.new
-    # p board1.inspect
-    pos = [2,1]
+    pos1 = [1,0]
     pos2 = [3,0]
-    pos3 = [4,1]
-    pos4 = [3,2]
-    board1[pos] = Pawn.new(:w, board1, pos)
-    board1[pos2] = Pawn.new(:b, board1, pos2)
-    # board1[pos3] = Pawn.new(:b, board1, pos3)
-    board1[pos4] = Pawn.new(:b, board1, pos4)
-    p board1[pos].moves
+    p board1[pos1]
+    p board1[pos1].moves
+    p board1[pos2]
+    board1.move_piece(pos1, pos2, :w)
+    p board1[pos1]
+    p board1[pos2]
 end
