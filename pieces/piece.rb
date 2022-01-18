@@ -1,6 +1,6 @@
 class Piece
     
-    attr_reader, :color, :board
+    attr_reader :color, :board
     attr_accessor :pos
 
     def initialize(color, board, pos)
@@ -25,9 +25,9 @@ class Piece
 
     end
 
-    def pos=(val)
-
-    end
+    # def pos=(val)
+        
+    # end
 
     def symbol
         # subclass implements this with unicode chess char

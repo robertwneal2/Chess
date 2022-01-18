@@ -7,7 +7,7 @@ class Board
 
     def initialize
         @rows = Array.new(8) { Array.new }
-        @null_piece = NullPiece
+        @null_piece = NullPiece.instance
         initialize_board
     end
 
@@ -30,14 +30,12 @@ class Board
                 end
             else
                 8.times do 
-                    # color = :n
-                    # pos = [row, col]
-                    # row << Piece.new(color, self, pos)
-                    entire_row << nil
+                    entire_row << @null_piece
                     col += 1
                 end
             end
         end
+
     end
 
     def inspect
@@ -66,7 +64,7 @@ class Board
             end
         end
 
-        if self[start_pos] == nil
+        if self[start_pos] == @null_piece
             raise "No piece at start pos" 
         end
 
@@ -74,10 +72,11 @@ class Board
         #     raise "Cannot move to end pos"
         # end
 
+        # debugger
         piece = self[start_pos]
-        self[end_pos] = piece
-        self[start_pos] = nil
         piece.pos = end_pos
+        self[end_pos] = piece
+        self[start_pos] = @null_piece
 
     end
 
@@ -86,12 +85,8 @@ end
 if __FILE__ == $0
     board1 = Board.new
     # p board1.inspect
-    pos1 = [0,0]
-    pos2 = [2,0]
-    p board1[pos1]
-    p board1[pos2]
-    board1.move_piece(pos1, pos2)
-    # p board1.inspect
-    p board1[pos1]
-    p board1[pos2]
+    pos = [3,1]
+    pos2 = [4,0]
+    board1[pos] = Queen.new(:w, board1, pos)
+    p board1[pos].moves
 end
