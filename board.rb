@@ -86,7 +86,9 @@ if __FILE__ == $0
     board1 = Board.new
     # p board1.inspect
     pos = [3,1]
-    pos2 = [4,0]
+    pos2 = [5,5]
     board1[pos] = Queen.new(:w, board1, pos)
     p board1[pos].moves
+    board1[pos2] = Knight.new(:w, board1, pos2)
+    p board1[pos2].moves
 end

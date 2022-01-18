@@ -9,7 +9,7 @@ class Queen < Piece
         "B"
     end
 
-    protected
+    private
     def move_dirs
         horz_and_vert_dirs + diagonal_dirs
     end

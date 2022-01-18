@@ -1,15 +1,17 @@
 require_relative "piece"
 require_relative 'stepable'
 
-class King < Piece
+class Knight < Piece
+
+    include Stepable
 
     def symbol
-        "K"
+        "H"
     end
 
     protected
-    def moves_diffs
-
+    def move_diffs
+        [[-1, 2], [1, 2], [-1, -2], [1, -2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
     end
 
 end
