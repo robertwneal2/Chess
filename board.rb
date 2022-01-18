@@ -85,10 +85,13 @@ end
 if __FILE__ == $0
     board1 = Board.new
     # p board1.inspect
-    pos = [3,1]
-    pos2 = [5,5]
-    board1[pos] = Queen.new(:w, board1, pos)
+    pos = [2,1]
+    pos2 = [3,0]
+    pos3 = [4,1]
+    pos4 = [3,2]
+    board1[pos] = Pawn.new(:w, board1, pos)
+    board1[pos2] = Pawn.new(:b, board1, pos2)
+    # board1[pos3] = Pawn.new(:b, board1, pos3)
+    board1[pos4] = Pawn.new(:b, board1, pos4)
     p board1[pos].moves
-    board1[pos2] = Knight.new(:w, board1, pos2)
-    p board1[pos2].moves
 end
