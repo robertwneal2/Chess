@@ -3,7 +3,7 @@ require_relative 'pieces'
 
 class Board
 
-    # attr_reader :rows
+    attr_reader :rows
 
     def initialize
         @rows = Array.new(8) { Array.new }
@@ -12,33 +12,33 @@ class Board
     end
 
     def initialize_board
-        piece_row = [Rook, Knight, Bishop, King, Queen, Bishop, Knight, Rook]
+        piece_row = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
         @rows.each_with_index do |entire_row, row|
             col = 0
             if row == 0
                 piece_row.each do |piece|
-                    color = :w
+                    color = :black
                     pos = [row, col]
                     entire_row << piece.new(color, self, pos)
                     col += 1
                 end
             elsif row == 1
                 8.times do 
-                    color = :w
+                    color = :black
                     pos = [row, col]
                     entire_row << Pawn.new(color, self, pos)
                     col += 1
                 end
             elsif row == 7
                 piece_row.each do |piece|
-                    color = :b
+                    color = :white
                     pos = [row, col]
                     entire_row << piece.new(color, self, pos)
                     col += 1
                 end
             elsif row == 6
                 8.times do 
-                    color = :w
+                    color = :white
                     pos = [row, col]
                     entire_row << Pawn.new(color, self, pos)
                     col += 1
