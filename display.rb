@@ -11,10 +11,8 @@ class Display
 
     def render
         grid = @board.rows
-
-        puts " #{(0..7).to_a.join("")}"
         grid.each_with_index do |row, row_i|
-            row_val = "#{row_i}"
+            row_val = ""
             row.each_with_index do |square, col|
                 piece = square.symbol
                 piece_color = square.color
@@ -27,7 +25,7 @@ class Display
                 else
                     background_color = :light_black
                 end
-                row_val += "#{piece.colorize(:color => piece_color, :background => background_color)}"
+                row_val += "#{piece} ".colorize(:color => piece_color, :background => background_color)
             end
             puts row_val
         end

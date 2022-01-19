@@ -4,7 +4,7 @@ require "byebug"
 class Pawn < Piece
 
     def symbol 
-        "P"
+        "♟"
     end
 
     def moves
