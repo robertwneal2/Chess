@@ -101,16 +101,49 @@ class Board
         pos.all? { |coord| coord.between?(0, 7) }
     end
 
+    def in_check?(color)
+        king_pos = find_king(color)
+        @rows.each do |row|
+            row.each_with_index do |piece, col|
+                if piece.color != color
+                    # piece_valid_moves = valid_moves(piece)
+                    # piece_valid_moves.each do |end_pos|
+                        # return true if end_pos = king_pos
+                    # end
+                end
+            end
+        end
+        false
+    end
+
+    def checkmate?(color)
+        if in_check?(color)
+            @rows.each do |row|
+                row.each_with_index do |piece, col|
+                    if piece.color == color
+                        # piece_valid_moves = valid_moves(piece)
+                        # return true if piece_valid_moves.empty?
+                    end
+                end
+            end
+        end
+        false
+    end
+
+    def find_king(color)
+        @rows.each do |row|
+            row.each_with_index do |piece, col|
+                if piece.symbol == "♚" && color == piece.color
+                    return piece.pos
+                end
+            end
+        end
+    end
+
 end
 
 if __FILE__ == $0
     board1 = Board.new
-    pos1 = [1,0]
-    pos2 = [3,0]
-    p board1[pos1]
-    p board1[pos1].moves
-    p board1[pos2]
-    board1.move_piece(pos1, pos2, :w)
-    p board1[pos1]
-    p board1[pos2]
+    p board1.in_check?(:white)
+    p board1.checkmate?(:white)
 end
