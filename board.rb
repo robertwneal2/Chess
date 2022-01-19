@@ -97,6 +97,10 @@ class Board
 
     end
 
+    def valid_pos?(pos)
+        pos.all? { |coord| coord.between?(0, 7) }
+    end
+
 end
 
 if __FILE__ == $0
