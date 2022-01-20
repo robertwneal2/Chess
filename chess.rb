@@ -38,8 +38,8 @@ class Chess
             end
         end
         system("clear")
-        @display.render
         puts "#{@current_player.name} wins!"
+        @display.render
     end
 
     private 
