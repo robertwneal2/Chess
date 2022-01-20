@@ -35,16 +35,16 @@ class Pawn < Piece
 
     def at_start_row?
         row, col = pos
-        if color == :white && row == 1
+        if color == :black && row == 1
             return true
-        elsif color == :black && row == 7
+        elsif color == :white && row == 7
             return true
         end
         false
     end
 
     def forward_dir
-        if color == :white
+        if color == :black
             1
         else
             -1

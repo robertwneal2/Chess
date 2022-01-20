@@ -3,7 +3,7 @@ require_relative 'pieces'
 
 class Board
 
-    attr_reader :rows
+    attr_accessor :rows
 
     def initialize
         @rows = Array.new(8) { Array.new }
@@ -140,10 +140,31 @@ class Board
         end
     end
 
+    def dup
+        # debugger
+        board_dup = Board.new
+        @rows.each_with_index do |entire_row, row|
+            entire_row.each_with_index do |piece, col|
+                if piece.symbol != " "
+                    piece_dup = piece.dup
+                else
+                    piece_dup = piece
+                end
+                piece_dup.pos = [row, col]
+                board_dup[[row, col]] = piece_dup
+            end
+        end
+        board_dup
+    end
+
 end
 
 if __FILE__ == $0
     board1 = Board.new
-    p board1.in_check?(:white)
-    p board1.checkmate?(:white)
+    pos = [1,0]
+    pos2 = [1,0]
+    pos3 = [2,2]
+    p board1[pos].moves
+    # p board1.in_check?(:white)
+    # p board1.checkmate?(:white)
 end
