@@ -15,15 +15,19 @@ class Chess
 
     def play 
         game_over = false
+        system("clear")
+        puts "To play, use arrow keys to move and space/enter to select/move a piece. Ctrl C to stop playing. Press anything to play!"
+        @display.render
+        @display.cursor.read_char
         while game_over == false
             begin
                 start_pos, end_pos = @current_player.make_move(@board)
                 color = @current_player.color
                 # debugger
                 @board.move_piece(start_pos, end_pos, color)
-            rescue
-                puts "Bad move, please try again!"
-                sleep(1)
+            rescue => e
+                puts "#{e.message}"
+                sleep(2)
                 retry
             end
 

@@ -46,7 +46,7 @@ class Cursor
     handle_key(key)
   end
 
-  private
+  
 
   def read_char
     STDIN.echo = false # stops the console from printing return values
@@ -76,6 +76,8 @@ class Cursor
 
     return input
   end
+
+  private
 
   def handle_key(key)
     case key

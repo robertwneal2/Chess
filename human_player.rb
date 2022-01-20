@@ -7,8 +7,8 @@ class HumanPlayer < Player
     moves = []
         while input_count < 2
             system"clear"
-            @display.render
             puts "#{name}'s turn"
+            @display.render
             move = @display.cursor.get_input
             if move != nil && move == moves[0]
                 input_count = 0

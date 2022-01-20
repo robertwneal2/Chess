@@ -74,24 +74,24 @@ class Board
 
         inputs.each do |input|
             if input < 0 || input > 7
-                raise "Positions must be 0 - 7" 
+                raise StandardError.new("Positions must be 0 - 7")
             end
         end
 
         if self[start_pos] == @null_piece
-            raise "No piece at start pos" 
+            raise StandardError.new("No piece chosen!")
         end
 
         if self[start_pos].color != color
-            raise "Can't move a piece that's not yours!"
+            raise StandardError.new("Can't move a piece that's not yours!")
         end
 
         if !self[start_pos].moves.include?(end_pos)
-            raise "Invalid move for that piece!"
+            raise StandardError.new("This piece can't move like that!")
         end
 
         if !self[start_pos].valid_moves.include?(end_pos)
-            raise "Can't put self into check!"
+            raise StandardError.new("Can't put self into check!")
         end
 
         piece = self[start_pos]
