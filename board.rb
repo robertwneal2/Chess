@@ -87,7 +87,11 @@ class Board
         end
 
         if !self[start_pos].moves.include?(end_pos)
-            raise "Invalid move!"
+            raise "Invalid move for that piece!"
+        end
+
+        if !self[start_pos].valid_moves.include?(end_pos)
+            raise "Can't put self into check!"
         end
 
         piece = self[start_pos]
@@ -95,6 +99,13 @@ class Board
         self[end_pos] = piece
         self[start_pos] = @null_piece
 
+    end
+
+    def move_piece!(start_pos, end_pos)
+        piece = self[start_pos]
+        piece.pos = end_pos
+        self[end_pos] = piece
+        self[start_pos] = @null_piece
     end
 
     def valid_pos?(pos)
@@ -106,10 +117,10 @@ class Board
         @rows.each do |row|
             row.each_with_index do |piece, col|
                 if piece.color != color
-                    # piece_valid_moves = valid_moves(piece)
-                    # piece_valid_moves.each do |end_pos|
-                        # return true if end_pos = king_pos
-                    # end
+                    piece_moves = piece.moves
+                    piece_moves.each do |end_pos|
+                        return true if end_pos == king_pos
+                    end
                 end
             end
         end
@@ -119,20 +130,22 @@ class Board
     def checkmate?(color)
         if in_check?(color)
             @rows.each do |row|
-                row.each_with_index do |piece, col|
+                row.each do |piece|
                     if piece.color == color
-                        # piece_valid_moves = valid_moves(piece)
-                        # return true if piece_valid_moves.empty?
+                        piece_valid_moves = piece.valid_moves
+                        return false if !piece_valid_moves.empty?
                     end
                 end
             end
+            true
+        else
+            false
         end
-        false
     end
 
     def find_king(color)
         @rows.each do |row|
-            row.each_with_index do |piece, col|
+            row.each do |piece|
                 if piece.symbol == "♚" && color == piece.color
                     return piece.pos
                 end
@@ -163,15 +176,22 @@ end
 
 if __FILE__ == $0
     board1 = Board.new
-    pos = [1,0]
-    pos2 = [2,0]
-    board2 = board1.dup
-    board1.move_piece(pos, pos2, :black)
-    p board1[pos]
-    p board2[pos]
-    p board1[pos2].board
-    puts
-    p board2[pos].board
-    # p board1.in_check?(:white)
-    # p board1.checkmate?(:white)
+    f2 = [6,5]
+    f3 = [5,5]
+    e7 = [1,4]
+    e5 = [3,4]
+    g2 = [6,6]
+    g4 = [4,6]
+    d8 = [0,3]
+    h4 = [4,7]
+    a2 = [6,0]
+    a3 = [5,0]
+    
+    board1.move_piece(a2,a3,:white)
+    board1.move_piece(e7,e5,:black)
+    board1.move_piece(g2,g4,:white)
+    board1.move_piece(d8,h4,:black)
+    board1.move_piece(f2,f3,:white)
+    p board1.checkmate?(:white)
+    p board1.checkmate?(:black)
 end

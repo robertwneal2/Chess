@@ -22,7 +22,16 @@ class Piece
     end
 
     def valid_moves
-        
+        possible_moves = moves
+        valid_moves = []
+        possible_moves.each do |move|
+            temp_board = @board.dup
+            temp_board.move_piece!(pos, move)
+            if temp_board.in_check?(color) == false
+                valid_moves << move
+            end
+        end
+        valid_moves
     end
 
     # def pos=(val)
