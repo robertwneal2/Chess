@@ -145,12 +145,14 @@ class Board
         board_dup = Board.new
         @rows.each_with_index do |entire_row, row|
             entire_row.each_with_index do |piece, col|
-                if piece.symbol != " "
-                    piece_dup = piece.dup
+                piece_class = piece.class
+                piece_color = piece.color
+                piece_pos = [row,col]
+                if piece_color == :none
+                    piece_dup = @null_piece
                 else
-                    piece_dup = piece
+                    piece_dup = piece_class.new(piece_color, board_dup, piece_pos)
                 end
-                piece_dup.pos = [row, col]
                 board_dup[[row, col]] = piece_dup
             end
         end
@@ -162,9 +164,14 @@ end
 if __FILE__ == $0
     board1 = Board.new
     pos = [1,0]
-    pos2 = [1,0]
-    pos3 = [2,2]
-    p board1[pos].moves
+    pos2 = [2,0]
+    board2 = board1.dup
+    board1.move_piece(pos, pos2, :black)
+    p board1[pos]
+    p board2[pos]
+    p board1[pos2].board
+    puts
+    p board2[pos].board
     # p board1.in_check?(:white)
     # p board1.checkmate?(:white)
 end
