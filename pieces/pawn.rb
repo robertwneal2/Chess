@@ -37,7 +37,7 @@ class Pawn < Piece
         row, col = pos
         if color == :black && row == 1
             return true
-        elsif color == :white && row == 7
+        elsif color == :white && row == 6
             return true
         end
         false
