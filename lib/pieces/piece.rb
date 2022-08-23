@@ -13,4 +13,11 @@ class Piece
     possible_moves.include?(new_pos) ? true : false
   end
 
+  private
+  
+  def off_of_board?(pos)
+    return true if pos[0] < 0 || pos[0] > 7 || pos[1] < 0 || pos[1] > 7
+    false
+  end
+
 end
