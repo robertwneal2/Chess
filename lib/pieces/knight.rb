@@ -1,9 +1,19 @@
 require_relative 'piece'
+require_relative 'stepable'
 
 class Knight < Piece
 
-  def possible_moves
+  include Stepable
 
-  end
+  MOVE_CHANGES = [
+    [1, 2],
+    [2, 1],
+    [2, -1],
+    [1, -2],
+    [-1, 2],
+    [-2, 1],
+    [-2, -1],
+    [-1, -2]
+  ]
 
 end
