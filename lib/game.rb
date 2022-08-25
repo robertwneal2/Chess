@@ -1,6 +1,7 @@
 require_relative 'board'
 require_relative 'player'
 require_relative 'computer'
+require 'yaml'
 require 'pry-byebug'
 
 class Game
@@ -37,15 +38,39 @@ class Game
 
   def play
     until game_over?
+      system('clear')
+      @board.display
       piece, new_pos = get_move
+      break if game_saved?(piece)
       set_last_move(piece, new_pos)
       @board.make_move(piece, new_pos)
       switch_turn
     end
-    display_result
+    display_result unless piece == :save
   end
 
   private
+
+  def game_saved?(piece)
+    if piece == :save
+      save_game
+      return true 
+    end
+    false
+  end
+
+  def save_game
+    puts 'Enter save name:'
+    save_name = gets.chomp
+    while save_name == ''
+      puts "Name cannot be empty, try again:"
+      save_name = gets.chomp
+    end
+    game_yml = self.to_yaml
+    current_dir =  File.dirname(__FILE__)
+    File.write("#{current_dir}/saves/#{save_name}.yml", game_yml)
+    puts "Game saved to: #{current_dir}/saves/#{save_name}.yml"
+  end
 
   def set_last_move(piece, new_pos)
     first_letter = LETTERS.key(piece.pos[1])
@@ -56,13 +81,13 @@ class Game
   end
 
   def get_move
-    system('clear')
-    @board.display
     unless @last_move == nil
       puts "Last move: #{@last_move[0..1]} => #{@last_move[2..3]}"
     end
     piece = select_piece
+    return :save if piece == :save
     new_pos = select_pos
+    return :save if new_pos == :save
     until piece.valid_move?(new_pos) && piece.color == @current_turn.color
       system('clear')
       @board.display
@@ -90,8 +115,9 @@ class Game
   end
 
   def select_piece
-    puts "#{@current_turn.name} (#{@current_turn.color.to_s}) enter piece position:"
+    puts "#{@current_turn.name} (#{@current_turn.color.to_s}) enter piece position ('s' to save):"
     piece_pos = gets.chomp
+    return :save if piece_pos.downcase == 's'
     until piece_pos.length == 2 && LETTERS.include?(piece_pos[0].upcase) && NUMBERS.include?(piece_pos[1])
       puts "Invalid piece selection, try again!"
       piece_pos = gets.chomp
@@ -101,8 +127,9 @@ class Game
   end
 
   def select_pos
-    puts "Enter new position:"
+    puts "Enter new position ('s' to save):"
     new_pos = gets.chomp
+    return :save if new_pos.downcase == 's'
     until new_pos.length == 2 && LETTERS.include?(new_pos[0].upcase) && NUMBERS.include?(new_pos[1])
       puts "Invalid new position, try again!"
       new_pos = gets.chomp
@@ -126,5 +153,61 @@ class Game
 
 end
 
-g = Game.new("Bert", "Rob")
-g.play
+def new_game
+  system('clear')
+  puts 'New game!'
+
+  puts "Enter Player 1 name ('computer' for computer player):"
+  player1_name = gets.chomp
+  while player1_name == ''
+    puts "Name cannot be empty, try again:"
+  end
+
+  puts "Enter Player 2 name:('computer' for computer player)"
+  player2_name = gets.chomp
+  while player2_name == ''
+    puts "Name cannot be empty, try again:"
+  end
+
+  game = Game.new(player1_name, player2_name)
+end
+
+permitted_classes = [
+  Game, 
+  Board, 
+  Player,
+  Piece,
+  King,
+  Queen,
+  Rook,
+  Bishop,
+  Pawn,
+  Knight,
+  Symbol
+]
+
+system("clear")
+puts "Load game? Enter Y/N"
+load_input = gets.chomp.upcase
+if load_input == 'Y'
+  loop_done = false
+  puts 'Enter file name or \'new\' to start a new game:'
+  while loop_done == false do
+    current_dir =  File.dirname(__FILE__)
+    file_name = gets.chomp
+    file_path = "#{current_dir}/saves/#{file_name}.yml"
+    if file_name.upcase == 'NEW'
+      game = new_game
+      loop_done = true
+    elsif File.exist?(file_path)
+      game = YAML.load(File.read(file_path), aliases: true, permitted_classes: permitted_classes)
+      loop_done = true
+    else
+      puts 'File name does not exist, try again:'
+    end
+  end
+else
+  game = new_game
+end
+
+game.play
