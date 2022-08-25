@@ -1,9 +1,15 @@
 require_relative 'piece'
+require_relative 'slidable'
 
 class Bishop < Piece
 
-  def possible_moves
+  include Slidable
 
-  end
+  MOVE_DIRECTIONS = [
+    [0, 1],
+    [0, -1],
+    [1, 0],
+    [-1, 0]
+  ]
 
 end

@@ -1,9 +1,19 @@
 require_relative 'piece'
+require_relative 'slidable'
 
 class Queen < Piece
 
-  def possible_moves
+  include Slidable
 
-  end
+  MOVE_DIRECTIONS = [
+    [0, 1],
+    [0, -1],
+    [1, 0],
+    [-1, 0],
+    [1, 1],
+    [1, -1],
+    [-1, -1],
+    [-1, 1]
+  ]
 
 end

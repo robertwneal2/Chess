@@ -1,9 +1,15 @@
 require_relative 'piece'
+require_relative 'slidable'
 
 class Rook < Piece
 
-  def possible_moves
+  include Slidable
 
-  end
+  MOVE_DIRECTIONS = [
+    [1, 1],
+    [1, -1],
+    [-1, -1],
+    [-1, 1]
+  ]
 
 end

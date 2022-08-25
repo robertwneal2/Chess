@@ -13,6 +13,10 @@ class Piece
     possible_moves.include?(new_pos) ? true : false
   end
 
+  def inspect
+    {color: @color, class: self.class, pos: @pos}
+  end
+
   private
   
   def off_of_board?(pos)
