@@ -7,7 +7,7 @@ module Slidable
       new_move_piece = @board[new_pos]
       direction_blocked = false
       until direction_blocked
-        if new_move_piece.color == @color || off_of_board?(new_pos) # Hit same color or edge of board
+        if off_of_board?(new_pos) || new_move_piece.color == @color # Hit same color or edge of board
           direction_blocked = true 
         elsif new_move_piece.color != :null # Hit opponent piece
           moves << new_pos

@@ -24,4 +24,8 @@ class Piece
     false
   end
 
+  def possible_moves
+    [] # Null piece has no possible moves
+  end
+
 end
