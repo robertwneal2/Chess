@@ -11,8 +11,8 @@ describe Rook do
 
       it 'returns all possible moves' do
         allow(board).to receive(:[]).and_return(piece)
-        expected_result = [[5, 5], [6, 6], [7, 7], [5, 3], [6, 2], [7, 1], 
-        [3, 3], [2, 2], [1, 1], [0, 0], [3, 5], [2, 6], [1, 7]]
+        expected_result = [[4, 5], [4, 6], [4, 7], [4, 3], [4, 2], [4, 1], 
+        [4, 0], [5, 4], [6, 4], [7, 4], [3, 4], [2, 4], [1, 4], [0, 4]]
         result = rook_empty.possible_moves
         expect(result).to eq(expected_result)
       end

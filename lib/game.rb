@@ -44,12 +44,34 @@ class Game
       break if game_saved?(piece)
       set_last_move(piece, new_pos)
       @board.make_move(piece, new_pos)
+      pawn_promotion?(piece, new_pos)
       switch_turn
     end
     display_result unless piece == :save
   end
 
   private
+
+  def pawn_promotion?(piece, pos)
+    if piece.class == Pawn && (pos[0] == 7 || pos[0] == 0) # Pawn on final row?
+      pieces = {
+        "Q" => Queen,
+        "K" => Knight,
+        "R" => Rook,
+        "B" => Bishop
+      }
+      piece_color = piece.color
+      puts "Enter new piece to replace pawn with (Q, K, R, B)"
+      piece_letter = gets.chomp
+      until pieces.include?(piece_letter.upcase)
+        puts "Try again!"
+        piece_letter = gets.chomp
+      end
+      new_class = pieces[piece_letter.upcase]
+      new_piece = new_class.new(piece_color, @board, pos)
+      @board.make_move(new_piece, pos)
+    end
+  end
 
   def game_saved?(piece)
     if piece == :save
