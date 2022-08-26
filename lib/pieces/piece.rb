@@ -1,16 +1,18 @@
 class Piece
 
   attr_accessor :pos
-  attr_reader :color, :board
+  attr_reader :color
 
-  def initialize(color, board, pos = nil) # nil position is empty 'piece'
+  def initialize(color, pos = nil) # nil position is empty 'piece'
     @color = color #:null for empty 
     @pos = pos
-    @board = board
   end
 
-  def valid_move?(new_pos)
-    possible_moves.include?(new_pos) ? true : false
+  def valid_move?(pos, board)
+    # Cannot move king into check
+    return false if board.pos_under_attack?(pos, @color) && self.class == King 
+    
+    possible_moves(board).include?(pos) ? true : false
   end
 
   def inspect
@@ -24,7 +26,7 @@ class Piece
     false
   end
 
-  def possible_moves
+  def possible_moves(board)
     [] # Null piece has no possible moves
   end
 

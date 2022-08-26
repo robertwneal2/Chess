@@ -1,5 +1,6 @@
 require_relative 'pieces'
 require 'colorize'
+require 'pry-byebug'
 
 class Board 
 
@@ -18,7 +19,7 @@ class Board
   attr_reader :board
 
   def initialize
-    @empty_space = Piece.new(:null, self)
+    @empty_space = Piece.new(:null)
     @board = generate_board
   end
 
@@ -47,9 +48,34 @@ class Board
 
   def make_move(piece, new_pos)
     old_pos = piece.pos
-    piece.pos = new_pos # Update new pos of piece
+    # piece.pos = new_pos # Update new pos of piece
     self[old_pos] = @empty_space
     self[new_pos] = piece # Move piece on board
+  end
+
+  def update_piece_positions
+    @board.each_with_index do |row, row_i|
+      row.each_with_index do |piece, col_i|
+        piece.pos = [row_i, col_i] unless piece.color == :null
+      end
+    end
+  end
+
+  def save_move?(color)
+    # Grab all pieces of same color that are not kings
+    @board.flatten.each do |piece|
+      if piece.color == color && piece.class != King
+        moves = piece.possible_moves(self)
+        moves.each do |move|
+          temp_board_class = self.clone
+          temp_board_class.board = @board.clone.map(&:clone)
+          temp_board_class.make_move(piece, move)
+          return true unless temp_board_class.check?(color) #any moves that can save king?
+        end
+      end
+    end
+
+    false
   end
 
   def [](pos)
@@ -76,38 +102,51 @@ class Board
     all_squares = @board.flatten
     all_squares.each do |piece|
       if piece.color == opposing_color
-        all_opposing_moves += piece.possible_moves
+        all_opposing_moves += piece.possible_moves(self)
       end
     end
+    all_opposing_moves
     return true if all_opposing_moves.include?(pos)
     false
+  end
+
+  def check?(color)
+    king = find_king(color)
+    return true if pos_under_attack?(king.pos, king.color)
+    false
+  end
+
+  protected
+
+  def board=(new_board)
+    @board = new_board
   end
 
   private
 
   def generate_board
     board_arr = Array.new(8) { Array.new(8, @empty_space) } # Start with all spaces as empty space
-    board_arr[0][0] = Rook.new(:white, self, [0, 0]) # White non-pawn pieces
-    board_arr[0][1] = Knight.new(:white, self, [0, 1])
-    board_arr[0][2] = Bishop.new(:white, self, [0, 2])
-    board_arr[0][3] = Queen.new(:white, self, [0, 3])
-    board_arr[0][4] = King.new(:white, self, [0, 4])
-    board_arr[0][5] = Bishop.new(:white, self, [0, 5])
-    board_arr[0][6] = Knight.new(:white, self, [0, 6])
-    board_arr[0][7] = Rook.new(:white, self, [0, 7])
+    board_arr[0][0] = Rook.new(:white, [0, 0]) # White non-pawn pieces
+    board_arr[0][1] = Knight.new(:white, [0, 1])
+    board_arr[0][2] = Bishop.new(:white, [0, 2])
+    board_arr[0][3] = Queen.new(:white, [0, 3])
+    board_arr[0][4] = King.new(:white, [0, 4])
+    board_arr[0][5] = Bishop.new(:white, [0, 5])
+    board_arr[0][6] = Knight.new(:white, [0, 6])
+    board_arr[0][7] = Rook.new(:white, [0, 7])
 
-    board_arr[7][0] = Rook.new(:black, self, [7, 0]) # Black non-pawn pieces
-    board_arr[7][1] = Knight.new(:black, self, [7, 1])
-    board_arr[7][2] = Bishop.new(:black, self, [7, 2])
-    board_arr[7][3] = Queen.new(:black, self, [7, 3])
-    board_arr[7][4] = King.new(:black, self, [7, 4])
-    board_arr[7][5] = Bishop.new(:black, self, [7, 5])
-    board_arr[7][6] = Knight.new(:black, self, [7, 6])
-    board_arr[7][7] = Rook.new(:black, self, [7, 7])
+    board_arr[7][0] = Rook.new(:black, [7, 0]) # Black non-pawn pieces
+    board_arr[7][1] = Knight.new(:black, [7, 1])
+    board_arr[7][2] = Bishop.new(:black, [7, 2])
+    board_arr[7][3] = Queen.new(:black, [7, 3])
+    board_arr[7][4] = King.new(:black, [7, 4])
+    board_arr[7][5] = Bishop.new(:black, [7, 5])
+    board_arr[7][6] = Knight.new(:black, [7, 6])
+    board_arr[7][7] = Rook.new(:black, [7, 7])
     
     (0..7).each do |col|
-      board_arr[6][col] = Pawn.new(:black, self, [6, col])
-      board_arr[1][col] = Pawn.new(:white, self, [1, col])
+      board_arr[6][col] = Pawn.new(:black, [6, col])
+      board_arr[1][col] = Pawn.new(:white, [1, col])
     end
 
     board_arr

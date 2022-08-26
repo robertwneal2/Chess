@@ -37,7 +37,7 @@ class Game
   end
 
   def play
-    until game_over?
+    until checkmate?
       system('clear')
       @board.display
       puts "Check!" if check?
@@ -45,6 +45,7 @@ class Game
       break if game_saved?(piece)
       set_last_move(piece, new_pos)
       @board.make_move(piece, new_pos)
+      @board.update_piece_positions
       pawn_promotion?(piece, new_pos)
       switch_turn
     end
@@ -54,14 +55,26 @@ class Game
   private
 
   def check?
-    current_color = @current_turn.color
-    king = @board.find_king(current_color)
-    return true if @board.pos_under_attack?(king.pos, king.color)
-    false
+    @board.check?(@current_turn.color)
   end
 
   def checkmate?
+    current_color = @current_turn.color
+    king = @board.find_king(current_color)
+    king_moves = king.possible_moves(@board)
 
+    # King doesn't have to move
+    return false unless @board.pos_under_attack?(king.pos, current_color) 
+
+    # King move to safety
+    king_moves.each do |move| 
+      return false unless @board.pos_under_attack?(move, current_color)
+    end
+
+    # Other piece can save King
+    return false if @board.save_move?(current_color)
+
+    true
   end
 
   def pawn_promotion?(piece, pos)
@@ -122,7 +135,7 @@ class Game
     return :save if piece == :save
     new_pos = select_pos
     return :save if new_pos == :save
-    until piece.valid_move?(new_pos) && piece.color == @current_turn.color
+    until piece.valid_move?(new_pos, @board) && piece.color == @current_turn.color
       system('clear')
       @board.display
       puts 'Invalid move, try again!'
@@ -171,18 +184,12 @@ class Game
     new_pos = [NUMBERS[new_pos[1]] ,LETTERS[new_pos[0].upcase]]
   end
 
-  def game_over?
-    king_count = @board.board.flatten.count { |piece| piece.class == King }
-    return false if king_count == 2
-    true
-  end
-
   def display_result
     switch_turn
     system('clear')
     @board.display
     puts "Last move: #{@last_move[0..1]} => #{@last_move[2..3]}"
-    puts "#{@current_turn.name} wins!"
+    puts "Checkmate! #{@current_turn.name} wins!"
   end
 
 end

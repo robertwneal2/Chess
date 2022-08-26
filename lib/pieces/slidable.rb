@@ -1,11 +1,11 @@
 module Slidable
 
-  def possible_moves
+  def possible_moves(board)
     moves = []
     self.class::MOVE_DIRECTIONS.each do |move_direction|
       new_pos = [@pos[0] + move_direction[0], @pos[1] + move_direction[1]]
       next if off_of_board?(new_pos)
-      new_move_piece = @board[new_pos]
+      new_move_piece = board[new_pos]
       direction_blocked = false
       until direction_blocked
         if off_of_board?(new_pos) || new_move_piece.color == @color # Hit same color or edge of board
@@ -19,7 +19,11 @@ module Slidable
             new_pos[0] + move_direction[0], 
             new_pos[1] + move_direction[1]
           ]
-          new_move_piece = @board[new_pos]
+          if off_of_board?(new_pos)
+            direction_blocked = true
+            next
+          end
+          new_move_piece = board[new_pos]
         end
       end
     end
