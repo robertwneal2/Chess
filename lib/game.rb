@@ -40,7 +40,8 @@ class Game
     until checkmate?
       system('clear')
       @board.display
-      puts "Check!" if check?
+      print_last_move
+      check?
       piece, new_pos = get_move
       break if game_saved?(piece)
       set_last_move(piece, new_pos)
@@ -55,7 +56,7 @@ class Game
   private
 
   def check?
-    @board.check?(@current_turn.color)
+    puts 'Check!' if @board.check?(@current_turn.color)
   end
 
   def checkmate?
@@ -93,7 +94,7 @@ class Game
         piece_letter = gets.chomp
       end
       new_class = pieces[piece_letter.upcase]
-      new_piece = new_class.new(piece_color, @board, pos)
+      new_piece = new_class.new(piece_color, pos)
       @board.make_move(new_piece, pos)
     end
   end
@@ -127,10 +128,13 @@ class Game
     @last_move = first_letter + first_num + second_letter + second_num
   end
 
-  def get_move
+  def print_last_move
     unless @last_move == nil
       puts "Last move: #{@last_move[0..1]} => #{@last_move[2..3]}"
     end
+  end
+
+  def get_move
     piece = select_piece
     return :save if piece == :save
     new_pos = select_pos
