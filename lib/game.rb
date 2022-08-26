@@ -40,6 +40,7 @@ class Game
     until game_over?
       system('clear')
       @board.display
+      puts "Check!" if check?
       piece, new_pos = get_move
       break if game_saved?(piece)
       set_last_move(piece, new_pos)
@@ -51,6 +52,17 @@ class Game
   end
 
   private
+
+  def check?
+    current_color = @current_turn.color
+    king = @board.find_king(current_color)
+    return true if @board.pos_under_attack?(king.pos, king.color)
+    false
+  end
+
+  def checkmate?
+
+  end
 
   def pawn_promotion?(piece, pos)
     if piece.class == Pawn && (pos[0] == 7 || pos[0] == 0) # Pawn on final row?

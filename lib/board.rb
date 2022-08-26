@@ -56,6 +56,33 @@ class Board
     @board[pos[0]][pos[1]]
   end
 
+  def find_king(current_color)
+    all_squares = @board.flatten
+    all_squares.each do |piece|
+      if piece.color == current_color && piece.class == King
+        return piece
+      end
+    end
+  end
+
+  def pos_under_attack?(pos, color)
+    if color == :white 
+      opposing_color = :black
+    else
+      opposing_color = :white
+    end
+
+    all_opposing_moves = []
+    all_squares = @board.flatten
+    all_squares.each do |piece|
+      if piece.color == opposing_color
+        all_opposing_moves += piece.possible_moves
+      end
+    end
+    return true if all_opposing_moves.include?(pos)
+    false
+  end
+
   private
 
   def generate_board
@@ -93,12 +120,4 @@ class Board
 end
 
 b = Board.new
-
-# pos = [1, 3]
-# p1 = b[pos]
-# b.make_move(p1, [3, 3])
-# pos2 = [0, 3]
-# p2 = b[pos2]
-# b.make_move(p2, [2, 3])
-# p p2.possible_moves
 
