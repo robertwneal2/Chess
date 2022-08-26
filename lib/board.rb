@@ -67,10 +67,9 @@ class Board
       if piece.color == color && piece.class != King
         moves = piece.possible_moves(self)
         moves.each do |move|
-          temp_board_class = self.clone
-          temp_board_class.board = @board.clone.map(&:clone)
-          temp_board_class.make_move(piece, move)
-          return true unless temp_board_class.check?(color) #any moves that can save king?
+          temp_board = clone_board
+          temp_board.make_move(piece, move)
+          return true unless temp_board.check?(color) #any moves that can save king?
         end
       end
     end
@@ -114,6 +113,33 @@ class Board
     king = find_king(color)
     return true if pos_under_attack?(king.pos, king.color)
     false
+  end
+
+  def pawn_promotion?(piece, pos)
+    if piece.class == Pawn && (pos[0] == 7 || pos[0] == 0) # Pawn on final row?
+      pieces = {
+        "Q" => Queen,
+        "K" => Knight,
+        "R" => Rook,
+        "B" => Bishop
+      }
+      piece_color = piece.color
+      puts "Enter new piece to replace pawn with (Q, K, R, B)"
+      piece_letter = gets.chomp
+      until pieces.include?(piece_letter.upcase)
+        puts "Try again!"
+        piece_letter = gets.chomp
+      end
+      new_class = pieces[piece_letter.upcase]
+      new_piece = new_class.new(piece_color, pos)
+      self.make_move(new_piece, pos)
+    end
+  end
+
+  def clone_board
+    temp_board_class = self.clone
+    temp_board_class.board = @board.clone.map(&:clone)
+    temp_board_class
   end
 
   protected

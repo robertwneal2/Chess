@@ -5,7 +5,7 @@ describe Knight do
   describe '#possible_moves' do
 
     context 'when in middle of board surround by empty spaces' do
-      subject(:knight_empty) { described_class.new(:white, board, [4, 4]) }
+      subject(:knight_empty) { described_class.new(:white, [4, 4]) }
       let(:board) { double('board') }
       let(:piece) { double('piece', color: :null) }
 
@@ -21,13 +21,13 @@ describe Knight do
           [2, 3],
           [3, 2]
         ]
-        result = knight_empty.possible_moves
+        result = knight_empty.possible_moves(board)
         expect(result).to eq(expected_result)
       end
     end
 
     context 'when in corner surrounded by empty spaces' do
-      subject(:knight_empty_corner) { described_class.new(:white, board, [0, 0]) }
+      subject(:knight_empty_corner) { described_class.new(:white, [0, 0]) }
       let(:board) { double('board') }
       let(:piece) { double('piece', color: :null) }
 
@@ -37,26 +37,26 @@ describe Knight do
           [1, 2],
           [2, 1]
         ]
-        result = knight_empty_corner.possible_moves
+        result = knight_empty_corner.possible_moves(board)
         expect(result).to eq(expected_result)
       end
     end
 
     context 'when in corner and blocked by white pieces' do
-      subject(:knight_empty_corner_white) { described_class.new(:white, board, [0, 0]) }
+      subject(:knight_empty_corner_white) { described_class.new(:white, [0, 0]) }
       let(:board) { double('board') }
       let(:piece) { double('piece', color: :white) }
   
       it 'returns no moves' do
         allow(board).to receive(:[]).and_return(piece)
         expected_result = []
-        result = knight_empty_corner_white.possible_moves
+        result = knight_empty_corner_white.possible_moves(board)
         expect(result).to eq(expected_result)
       end
     end
 
     context 'when in corner and blocked by black pieces' do
-      subject(:knight_empty_corner_black) { described_class.new(:white, board, [0, 0]) }
+      subject(:knight_empty_corner_black) { described_class.new(:white, [0, 0]) }
       let(:board) { double('board') }
       let(:piece) { double('piece', color: :black) }
     
@@ -66,7 +66,7 @@ describe Knight do
           [1, 2],
           [2, 1]
         ]
-        result = knight_empty_corner_black.possible_moves
+        result = knight_empty_corner_black.possible_moves(board)
         expect(result).to eq(expected_result)
       end
     end

@@ -10,7 +10,12 @@ class Piece
 
   def valid_move?(pos, board)
     # Cannot move king into check
-    return false if board.pos_under_attack?(pos, @color) && self.class == King 
+    return false if board.pos_under_attack?(pos, @color) && self.class == King
+    
+    # Cannot keep King in check
+    temp_board = board.clone_board
+    temp_board.make_move(self, pos)
+    return false if temp_board.check?(@color) == true
     
     possible_moves(board).include?(pos) ? true : false
   end
