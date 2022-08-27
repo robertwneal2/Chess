@@ -10,7 +10,7 @@ module Slidable
       until direction_blocked
         if off_of_board?(new_pos) || new_move_piece.color == @color # Hit same color or edge of board
           direction_blocked = true 
-        elsif new_move_piece.color != :null # Hit opponent piece
+        elsif new_move_piece.color != :null && new_move_piece.class != Piece # Hit opponent piece
           moves << new_pos
           direction_blocked = true
         else # Empty space, update new_piece and new_pos

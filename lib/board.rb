@@ -21,6 +21,7 @@ class Board
   def initialize
     @empty_space = Piece.new(:null)
     @board = generate_board
+    @en_passant_pos = nil
   end
 
   def display
@@ -52,10 +53,27 @@ class Board
     self[old_pos] = @empty_space
     self[new_pos] = piece # Move piece on board
 
-    #Castle 
+    # Castle 
     if piece.class == King && piece.moved == false
       pos_diff = (old_pos[1] - new_pos[1]).abs()
       castle(piece, new_pos) if pos_diff == 2
+    end
+
+    # Remove pawn if en passant space is landed on by pawn
+    if new_pos == @en_passant_pos && piece.class == Pawn
+      new_pos[0] == 2 ? dead_pawn_row = 3 : dead_pawn_row = 4
+      dead_pawn_pos = [dead_pawn_row, new_pos[1]]
+      self[dead_pawn_pos] = @empty_space
+    end
+
+    # Place en passant piece on jumped space
+    if piece.class == Pawn && (old_pos[0] - new_pos[0]).abs() == 2
+      old_pos[0] == 1 ? en_passant_row = 2 : en_passant_row = 5
+      @en_passant_pos = [en_passant_row, old_pos[1]]
+      en_passant_piece = Piece.new(@en_passant_pos, piece.color)
+      self[@en_passant_pos] = en_passant_piece
+    else
+      @en_passant_pos = nil
     end
   end
 
@@ -70,8 +88,18 @@ class Board
           piece.moved = true
         end
 
+        # Remove en passant space
+        if new_pos != @en_passant_pos &&  piece.class == Piece && piece.color != :null
+          self[new_pos] = @empty_space
+        end
+
         piece.pos = new_pos unless piece.color == :null
       end
+    end
+
+    #En passant update
+    unless @en_passant_piece.nil?
+
     end
   end
 
