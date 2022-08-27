@@ -51,14 +51,43 @@ class Board
     # piece.pos = new_pos # Update new pos of piece
     self[old_pos] = @empty_space
     self[new_pos] = piece # Move piece on board
+
+    #Castle 
+    if piece.class == King && piece.moved == false
+      pos_diff = (old_pos[1] - new_pos[1]).abs()
+      castle(piece, new_pos) if pos_diff == 2
+    end
   end
 
-  def update_piece_positions
+  # After move is made. Do this to not change piece objects during Game#checkmate due to board cloning
+  def update_piece_positions 
     @board.each_with_index do |row, row_i|
       row.each_with_index do |piece, col_i|
-        piece.pos = [row_i, col_i] unless piece.color == :null
+        new_pos = [row_i, col_i]
+        
+        # Update King@moved or Rook@moved
+        if (piece.class == King || piece.class == Rook) && piece.pos != new_pos && piece.moved == false
+          piece.moved = true
+        end
+
+        piece.pos = new_pos unless piece.color == :null
       end
     end
+  end
+
+  def castle(king, pos)
+    row = pos[0]
+    king_col = pos[1]
+    if king_col > 4 
+      rook_col = 7
+      new_rook_col = 5
+    else
+      rook_col = 0
+      new_rook_col = 3
+    end
+    rook = self[[row, rook_col]]
+    new_rook_pos = [row, new_rook_col]
+    make_move(rook, new_rook_pos)
   end
 
   def save_move?(color)
@@ -101,7 +130,7 @@ class Board
     all_squares = @board.flatten
     all_squares.each do |piece|
       if piece.color == opposing_color
-        all_opposing_moves += piece.possible_moves(self)
+        all_opposing_moves += piece.possible_moves(self, true)
       end
     end
     all_opposing_moves

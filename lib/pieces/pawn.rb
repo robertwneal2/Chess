@@ -8,7 +8,7 @@ class Pawn < Piece
     @start_row == 1 ? @dir = 1 : @dir = -1
   end
 
-  def possible_moves(board)
+  def possible_moves(board, exclude_castle = false)
     moves = []
     straight_pos = [pos[0] + @dir, pos[1]]
     unless off_of_board?(straight_pos)

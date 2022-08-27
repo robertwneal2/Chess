@@ -1,6 +1,6 @@
 module Slidable
 
-  def possible_moves(board)
+  def possible_moves(board, exclude_castle_moves = false)
     moves = []
     self.class::MOVE_DIRECTIONS.each do |move_direction|
       new_pos = [@pos[0] + move_direction[0], @pos[1] + move_direction[1]]

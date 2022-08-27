@@ -126,7 +126,7 @@ class Game
     return :save if piece == :save
     new_pos = select_pos
     return :save if new_pos == :save
-    until piece.valid_move?(new_pos, @board) && piece.color == @current_turn.color
+    until piece.color == @current_turn.color && piece.valid_move?(new_pos, @board)
       system('clear')
       @board.display
       puts 'Invalid move, try again!'
