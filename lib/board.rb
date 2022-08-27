@@ -110,11 +110,10 @@ class Board
     @board[pos[0]][pos[1]]
   end
 
-  def find_king(current_color)
-    all_squares = @board.flatten
-    all_squares.each do |piece|
-      if piece.color == current_color && piece.class == King
-        return piece
+  def find_king_pos(color)
+    @board.each_with_index do |row, row_i|
+      row.each_with_index do |piece, col_i|
+        return[row_i, col_i] if piece.class == King && piece.color == color
       end
     end
   end
@@ -139,8 +138,8 @@ class Board
   end
 
   def check?(color)
-    king = find_king(color)
-    return true if pos_under_attack?(king.pos, king.color)
+    king_pos = find_king_pos(color)
+    return true if pos_under_attack?(king_pos, color)
     false
   end
 

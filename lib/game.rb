@@ -69,7 +69,8 @@ class Game
 
   def checkmate?
     current_color = @current_turn.color
-    king = @board.find_king(current_color)
+    king_pos = @board.find_king_pos(current_color)
+    king = @board[king_pos]
     king_moves = king.possible_moves(@board)
 
     # King doesn't have to move
@@ -126,6 +127,7 @@ class Game
     return :save if piece == :save
     new_pos = select_pos
     return :save if new_pos == :save
+    # binding.pry
     until piece.color == @current_turn.color && piece.valid_move?(new_pos, @board)
       system('clear')
       @board.display
