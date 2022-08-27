@@ -60,7 +60,7 @@ class Game
     set_last_move(piece, new_pos)
     @board.make_move(piece, new_pos)
     @board.pawn_promotion?(piece, new_pos)
-    @board.update_piece_positions
+    @board.update_piece
   end
 
   def check?

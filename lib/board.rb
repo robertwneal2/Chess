@@ -59,8 +59,8 @@ class Board
     end
   end
 
-  # After move is made. Do this to not change piece objects during Game#checkmate due to board cloning
-  def update_piece_positions 
+  # Update piece instance variables after move is made. Do this to not change piece objects during Game#checkmate due to board cloning (not a deep clone)
+  def update_piece 
     @board.each_with_index do |row, row_i|
       row.each_with_index do |piece, col_i|
         new_pos = [row_i, col_i]
