@@ -38,7 +38,7 @@ class Game
   end
 
   def play
-    until checkmate?
+    until game_over?
       piece, new_pos = get_move
       break if game_saved?(piece)
       make_move(piece, new_pos)
@@ -57,6 +57,13 @@ class Game
     end
   end
 
+  def game_over?
+    return true if checkmate?
+    return true if draw?
+    return true if stalemate?
+    false
+  end
+
   def checkmate?
     current_color = @current_turn.color
     king_pos = @board.find_king_pos(current_color)
@@ -67,8 +74,10 @@ class Game
     return false unless @board.pos_under_attack?(king.pos, current_color) 
 
     # King move to safety
-    king_moves.each do |move| 
-      return false unless @board.pos_under_attack?(move, current_color)
+    king_moves.each do |move|
+      # temp_board = @board.clone_board
+      # temp_board.make_move(king, move)
+      return false if king.valid_move?(move, @board)
     end
 
     # Other piece can save King
@@ -79,6 +88,27 @@ class Game
 
   def check?
     puts 'Check!' if @board.check?(@current_turn.color)
+  end
+
+  def draw?
+    piece_count = @board.board.flatten.count { |piece| piece.color != :null }
+    return true if piece_count == 2
+  end
+
+  def stalemate?
+    switch_turn
+    pieces = color = @current_turn.color
+    pieces = @board.board.flatten.select { |piece| piece.color == color }
+    valid_moves = []
+    pieces.each do |piece|
+      possible_moves = piece.possible_moves(@board)
+      possible_moves.each do |move|
+        valid_moves << move if piece.valid_move?(move, @board)
+      end
+    end
+    return true if valid_moves == [] && !check?
+    switch_turn
+    false
   end
 
   def get_move
@@ -140,8 +170,8 @@ class Game
   def display_board
     system('clear')
     @display.render
-    check?
     puts "#{@current_turn.name.capitalize}'s turn (#{@current_turn.color.to_s.capitalize})"
+    check?
   end
 
   def make_move(piece, new_pos)
@@ -159,10 +189,14 @@ class Game
   end
 
   def display_result
-    switch_turn
     system("clear")
     @display.render
-    puts "Checkmate! #{@current_turn.name} (#{@current_turn.color.to_s.capitalize}) wins!"
+    if checkmate?
+      switch_turn
+      puts "Checkmate! #{@current_turn.name} (#{@current_turn.color.to_s.capitalize}) wins!"
+    else
+      puts "Draw! (#{@current_turn.color.to_s.capitalize}'s turn)"
+    end
   end
 
   def game_saved?(piece)
