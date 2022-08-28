@@ -96,7 +96,6 @@ class Game
   end
 
   def stalemate?
-    switch_turn
     pieces = color = @current_turn.color
     pieces = @board.board.flatten.select { |piece| piece.color == color }
     valid_moves = []
@@ -107,7 +106,6 @@ class Game
       end
     end
     return true if valid_moves == [] && !check?
-    switch_turn
     false
   end
 
@@ -117,7 +115,7 @@ class Game
       moves = computer_move
       # Pause if tow computer players to see move
       if @player1.class == Computer && @player2.class == Computer
-        sleep(0.1)
+        # sleep(0.1)
       end
       return moves
     end
