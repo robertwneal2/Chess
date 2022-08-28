@@ -1,6 +1,5 @@
 require_relative 'pieces'
 require 'colorize'
-require 'pry-byebug'
 
 class Board 
 

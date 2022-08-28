@@ -35,12 +35,10 @@ class Game
     @player1 = create_player(name1, :white)
     @player2 = create_player(name2, :black)
     @current_turn = @player1
-    @last_move = nil
   end
 
   def play
     until checkmate?
-      # display_board
       piece, new_pos = get_move
       break if game_saved?(piece)
       make_move(piece, new_pos)
@@ -51,23 +49,12 @@ class Game
 
   private
 
-  def display_board
-    system('clear')
-    @display.render
-    print_last_move
-    check?
-    puts "#{@current_turn.name}'s turn (#{@current_turn.color.to_s}). Press 's' to save"
-  end
-
-  def make_move(piece, new_pos)
-    set_last_move(piece, new_pos)
-    @board.make_move(piece, new_pos)
-    @board.pawn_promotion?(piece, new_pos)
-    @board.update_piece
-  end
-
-  def check?
-    puts 'Check!' if @board.check?(@current_turn.color)
+  def create_player(name, color)
+    if name.downcase == 'computer'
+      Computer.new(color)
+    else
+      Player.new(name, color)
+    end
   end
 
   def checkmate?
@@ -90,43 +77,13 @@ class Game
     true
   end
 
-  def game_saved?(piece)
-    if piece == :save
-      save_game
-      return true 
-    end
-    false
-  end
-
-  def save_game
-    puts 'Enter save name:'
-    save_name = gets.chomp
-    while save_name == ''
-      puts "Name cannot be empty, try again:"
-      save_name = gets.chomp
-    end
-    game_yml = self.to_yaml
-    current_dir =  File.dirname(__FILE__)
-    File.write("#{current_dir}/saves/#{save_name}.yml", game_yml)
-    puts "Game saved to: #{current_dir}/saves/#{save_name}.yml"
-  end
-
-  def set_last_move(piece, new_pos)
-    first_letter = LETTERS.key(piece.pos[1])
-    first_num = NUMBERS.key(piece.pos[0])
-    second_letter = LETTERS.key(new_pos[1])
-    second_num = NUMBERS.key(new_pos[0])
-    @last_move = first_letter + first_num + second_letter + second_num
-  end
-
-  def print_last_move
-    unless @last_move == nil
-      puts "Last move: #{@last_move[0..1]} => #{@last_move[2..3]}"
-    end
+  def check?
+    puts 'Check!' if @board.check?(@current_turn.color)
   end
 
   def get_move
     moves = select_positions
+    return moves if moves[0] == :save
     piece = @board[moves[0]]
     new_pos = moves[1]
     until piece.color == @current_turn.color && piece.valid_move?(new_pos, @board)
@@ -157,6 +114,19 @@ class Game
     moves
   end
 
+  def display_board
+    system('clear')
+    @display.render
+    check?
+    puts "#{@current_turn.color.to_s.capitalize}'s turn"
+  end
+
+  def make_move(piece, new_pos)
+    @board.make_move(piece, new_pos)
+    @board.pawn_promotion?(piece, new_pos)
+    @board.update_piece
+  end
+
   def switch_turn
     if @current_turn == @player1
       @current_turn = @player2
@@ -165,20 +135,32 @@ class Game
     end
   end
 
-  def create_player(name, color)
-    if name.downcase == 'computer'
-      Computer.new(color)
-    else
-      Player.new(name, color)
-    end
-  end
-
   def display_result
     switch_turn
     system("clear")
     @display.render
-    print_last_move
-    puts "Checkmate! #{@current_turn.name} wins!"
+    puts "Checkmate! #{@current_turn.name} (#{@current_turn.color.to_s.capitalize}) wins!"
+  end
+
+  def game_saved?(piece)
+    if piece == :save
+      save_game
+      return true 
+    end
+    false
+  end
+
+  def save_game
+    puts 'Enter save name:'
+    save_name = gets.chomp
+    while save_name == ''
+      puts "Name cannot be empty, try again:"
+      save_name = gets.chomp
+    end
+    game_yml = self.to_yaml
+    current_dir =  File.dirname(__FILE__)
+    File.write("#{current_dir}/saves/#{save_name}.yml", game_yml)
+    puts "Game saved to: #{current_dir}/saves/#{save_name}.yml"
   end
 
 end
