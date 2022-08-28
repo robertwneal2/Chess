@@ -9,6 +9,8 @@ class Piece
   end
 
   def valid_move?(pos, board)
+    return false if possible_moves(board) == []
+
     # Cannot move king into check
     return false if board.pos_under_attack?(pos, @color) && self.class == King
     

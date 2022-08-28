@@ -17,7 +17,9 @@ class Board
 
   attr_reader :board
 
-  def initialize
+  def initialize(player1, player2)
+    @player1 = player1
+    @player2 = player2
     @empty_space = Piece.new(:null)
     @board = generate_board
     @en_passant_pos = nil
@@ -156,11 +158,20 @@ class Board
         "B" => Bishop
       }
       piece_color = piece.color
-      puts "Enter new piece to replace pawn with (Q, K, R, B)"
-      piece_letter = gets.chomp
-      until pieces.include?(piece_letter.upcase)
-        puts "Try again!"
+      if @player1.color == piece_color 
+        current_player = @player1 
+      else
+        current_player = @player2
+      end
+      if current_player.class == Player
+        puts "Enter new piece to replace pawn with (Q, K, R, B)"
         piece_letter = gets.chomp
+        until pieces.include?(piece_letter.upcase)
+          puts "Try again!"
+          piece_letter = gets.chomp
+        end
+      else
+        piece_letter = 'Q'
       end
       new_class = pieces[piece_letter.upcase]
       new_piece = new_class.new(piece_color, pos)
@@ -219,6 +230,4 @@ class Board
   end
 
 end
-
-b = Board.new
 

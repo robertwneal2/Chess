@@ -30,11 +30,11 @@ class Game
   }
 
   def initialize(name1 = 'White', name2 = 'Black')
-    @board = Board.new
-    @display = Display.new(@board)
     @player1 = create_player(name1, :white)
     @player2 = create_player(name2, :black)
     @current_turn = @player1
+    @board = Board.new(@player1, @player2)
+    @display = Display.new(@board)
   end
 
   def play
@@ -82,6 +82,15 @@ class Game
   end
 
   def get_move
+    if @current_turn.class == Computer
+      display_board
+      moves = computer_move
+      # Pause if tow computer players to see move
+      if @player1.class == Computer && @player2.class == Computer
+        sleep(0.1)
+      end
+      return moves
+    end
     moves = select_positions
     return moves if moves[0] == :save
     piece = @board[moves[0]]
@@ -114,11 +123,25 @@ class Game
     moves
   end
 
+  def computer_move
+    # binding.pry
+    color = @current_turn.color
+    pieces = @board.board.flatten.select { |piece| piece.color == color }
+    piece = pieces.sample
+    new_pos = piece.pos
+    until piece.valid_move?(new_pos, @board)
+      piece = pieces.sample
+      possible_moves = piece.possible_moves(@board)
+      new_pos = possible_moves.sample
+    end
+    [piece, new_pos]
+  end
+
   def display_board
     system('clear')
     @display.render
     check?
-    puts "#{@current_turn.color.to_s.capitalize}'s turn"
+    puts "#{@current_turn.name.capitalize}'s turn (#{@current_turn.color.to_s.capitalize})"
   end
 
   def make_move(piece, new_pos)
