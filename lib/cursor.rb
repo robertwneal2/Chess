@@ -2,24 +2,12 @@ require "io/console"
 
 KEYMAP = {
   " " => :space,
-  "h" => :left,
-  "j" => :down,
-  "k" => :up,
-  "l" => :right,
-  "w" => :up,
-  "a" => :left,
-  "s" => :down,
-  "d" => :right,
-  "\t" => :tab,
+  "s" => :save,
   "\r" => :return,
-  "\n" => :newline,
-  "\e" => :escape,
   "\e[A" => :up,
   "\e[B" => :down,
   "\e[C" => :right,
   "\e[D" => :left,
-  "\177" => :backspace,
-  "\004" => :delete,
   "\u0003" => :ctrl_c,
 }
 
@@ -80,15 +68,17 @@ class Cursor
   def handle_key(key)
     case key
     when :ctrl_c
-        exit 0
+      exit 0
+    when :save
+      :save
     when :return, :space
-        toggle_selected
-        cursor_pos
+      toggle_selected
+      cursor_pos
     when :left, :right, :up, :down
         update_pos(MOVES[key])
         nil
     else
-        puts key
+      puts key
     end
   end
 
@@ -99,11 +89,11 @@ class Cursor
 
   def toggle_selected
     if @selected == false
-        @selected = true
-        @selected_pos = cursor_pos
+      @selected = true
+      @selected_pos = cursor_pos
     else
-        @selected = false
-        @selected_pos = nil
+      @selected = false
+      @selected_pos = nil
     end
   end
 end

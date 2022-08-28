@@ -24,29 +24,6 @@ class Board
     @en_passant_pos = nil
   end
 
-  def display
-    background_color = BACKGROUND_COLORS[0]
-    row_i = 9
-    @board.reverse_each do |row|
-      row_i -= 1
-      display_row = "#{row_i}"
-      row.each_with_index do |piece, col|
-        color = piece.color
-        symbol = SYMBOLS[piece.class.to_s] + " "
-        display_row += symbol.colorize(:color => color, :background => background_color)
-        
-        if col == 7
-        elsif background_color == BACKGROUND_COLORS[0]
-            background_color = BACKGROUND_COLORS[1]
-        else
-          background_color = BACKGROUND_COLORS[0]
-        end
-      end
-      puts display_row
-    end
-    puts " A B C D E F G H"
-  end
-
   def make_move(piece, new_pos)
     old_pos = piece.pos
     # piece.pos = new_pos # Update new pos of piece
@@ -212,27 +189,27 @@ class Board
 
   def generate_board
     board_arr = Array.new(8) { Array.new(8, @empty_space) } # Start with all spaces as empty space
-    board_arr[0][0] = Rook.new(:white, [0, 0]) # White non-pawn pieces
-    board_arr[0][1] = Knight.new(:white, [0, 1])
-    board_arr[0][2] = Bishop.new(:white, [0, 2])
-    board_arr[0][3] = Queen.new(:white, [0, 3])
-    board_arr[0][4] = King.new(:white, [0, 4])
-    board_arr[0][5] = Bishop.new(:white, [0, 5])
-    board_arr[0][6] = Knight.new(:white, [0, 6])
-    board_arr[0][7] = Rook.new(:white, [0, 7])
+    board_arr[0][0] = Rook.new(:black, [0, 0]) # White non-pawn pieces
+    board_arr[0][1] = Knight.new(:black, [0, 1])
+    board_arr[0][2] = Bishop.new(:black, [0, 2])
+    board_arr[0][3] = Queen.new(:black, [0, 3])
+    board_arr[0][4] = King.new(:black, [0, 4])
+    board_arr[0][5] = Bishop.new(:black, [0, 5])
+    board_arr[0][6] = Knight.new(:black, [0, 6])
+    board_arr[0][7] = Rook.new(:black, [0, 7])
 
-    board_arr[7][0] = Rook.new(:black, [7, 0]) # Black non-pawn pieces
-    board_arr[7][1] = Knight.new(:black, [7, 1])
-    board_arr[7][2] = Bishop.new(:black, [7, 2])
-    board_arr[7][3] = Queen.new(:black, [7, 3])
-    board_arr[7][4] = King.new(:black, [7, 4])
-    board_arr[7][5] = Bishop.new(:black, [7, 5])
-    board_arr[7][6] = Knight.new(:black, [7, 6])
-    board_arr[7][7] = Rook.new(:black, [7, 7])
+    board_arr[7][0] = Rook.new(:white, [7, 0]) # Black non-pawn pieces
+    board_arr[7][1] = Knight.new(:white, [7, 1])
+    board_arr[7][2] = Bishop.new(:white, [7, 2])
+    board_arr[7][3] = Queen.new(:white, [7, 3])
+    board_arr[7][4] = King.new(:white, [7, 4])
+    board_arr[7][5] = Bishop.new(:white, [7, 5])
+    board_arr[7][6] = Knight.new(:white, [7, 6])
+    board_arr[7][7] = Rook.new(:white, [7, 7])
     
     (0..7).each do |col|
-      board_arr[6][col] = Pawn.new(:black, [6, col])
-      board_arr[1][col] = Pawn.new(:white, [1, col])
+      board_arr[6][col] = Pawn.new(:white, [6, col])
+      board_arr[1][col] = Pawn.new(:black, [1, col])
     end
 
     board_arr

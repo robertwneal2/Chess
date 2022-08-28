@@ -41,9 +41,7 @@ class Game
   def play
     until checkmate?
       # display_board
-      print_last_move
-      check?
-      piece, new_pos = get_move2
+      piece, new_pos = get_move
       break if game_saved?(piece)
       make_move(piece, new_pos)
       switch_turn
@@ -55,7 +53,10 @@ class Game
 
   def display_board
     system('clear')
-    @board.display
+    @display.render
+    print_last_move
+    check?
+    puts "#{@current_turn.name}'s turn (#{@current_turn.color.to_s}). Press 's' to save"
   end
 
   def make_move(piece, new_pos)
@@ -124,26 +125,12 @@ class Game
     end
   end
 
-  def get_move2
-    input_count = 0
-    moves = []
-    while input_count < 2
-      system("clear")
-      puts "#{@current_turn.name}'s turn (#{@current_turn.color.to_s})"
-      @display.render
-      move = @display.cursor.get_input
-      if move != nil && move == moves[0]
-        input_count = 0
-        moves = []
-      elsif move != nil
-        input_count += 1
-        moves << move
-      end
-    end
+  def get_move
+    moves = select_positions
     piece = @board[moves[0]]
     new_pos = moves[1]
     until piece.color == @current_turn.color && piece.valid_move?(new_pos, @board)
-      moves = get_move2
+      moves = get_move
       piece = moves[0]
       new_pos = moves[1]
     end
@@ -151,19 +138,23 @@ class Game
     moves
   end
 
-  def get_move
-    piece = select_piece
-    return :save if piece == :save
-    new_pos = select_pos
-    return :save if new_pos == :save
-    # binding.pry
-    until piece.color == @current_turn.color && piece.valid_move?(new_pos, @board)
+  def select_positions
+    input_count = 0
+    moves = []
+    while input_count < 2
       display_board
-      puts 'Invalid move, try again!'
-      piece = select_piece
-      new_pos = select_pos
-    end 
-    [piece, new_pos]
+      move = @display.cursor.get_input
+      if move == :save
+        return [:save]
+      elsif move != nil && move == moves[0]
+        input_count = 0
+        moves = []
+      elsif move != nil
+        input_count += 1
+        moves << move
+      end
+    end
+    moves
   end
 
   def switch_turn
@@ -182,33 +173,11 @@ class Game
     end
   end
 
-  def select_piece
-    puts "#{@current_turn.name} (#{@current_turn.color.to_s}) enter piece position ('s' to save):"
-    piece_pos = gets.chomp
-    return :save if piece_pos.downcase == 's'
-    until piece_pos.length == 2 && LETTERS.include?(piece_pos[0].upcase) && NUMBERS.include?(piece_pos[1])
-      puts "Invalid piece selection, try again!"
-      piece_pos = gets.chomp
-    end
-    piece_pos = [NUMBERS[piece_pos[1]], LETTERS[piece_pos[0].upcase]]
-    @board[piece_pos]
-  end
-
-  def select_pos
-    puts "Enter new position ('s' to save):"
-    new_pos = gets.chomp
-    return :save if new_pos.downcase == 's'
-    until new_pos.length == 2 && LETTERS.include?(new_pos[0].upcase) && NUMBERS.include?(new_pos[1])
-      puts "Invalid new position, try again!"
-      new_pos = gets.chomp
-    end
-    new_pos = [NUMBERS[new_pos[1]] ,LETTERS[new_pos[0].upcase]]
-  end
-
   def display_result
     switch_turn
-    display_board
-    puts "Last move: #{@last_move[0..1]} => #{@last_move[2..3]}"
+    system("clear")
+    @display.render
+    print_last_move
     puts "Checkmate! #{@current_turn.name} wins!"
   end
 
@@ -244,7 +213,9 @@ permitted_classes = [
   Bishop,
   Pawn,
   Knight,
-  Symbol
+  Symbol,
+  Display,
+  Cursor
 ]
 
 system("clear")
