@@ -198,6 +198,10 @@ class Board
     temp_board_class
   end
 
+  def valid_pos?(pos)
+    pos.all? { |coord| coord.between?(0, 7) }
+  end
+
   protected
 
   def board=(new_board)

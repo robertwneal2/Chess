@@ -1,6 +1,7 @@
 require_relative 'board'
 require_relative 'player'
 require_relative 'computer'
+require_relative 'display'
 require 'yaml'
 require 'pry-byebug'
 
@@ -30,6 +31,7 @@ class Game
 
   def initialize(name1 = 'White', name2 = 'Black')
     @board = Board.new
+    @display = Display.new(@board)
     @player1 = create_player(name1, :white)
     @player2 = create_player(name2, :black)
     @current_turn = @player1
@@ -38,10 +40,10 @@ class Game
 
   def play
     until checkmate?
-      display_board
+      # display_board
       print_last_move
       check?
-      piece, new_pos = get_move
+      piece, new_pos = get_move2
       break if game_saved?(piece)
       make_move(piece, new_pos)
       switch_turn
@@ -122,6 +124,33 @@ class Game
     end
   end
 
+  def get_move2
+    input_count = 0
+    moves = []
+    while input_count < 2
+      system("clear")
+      puts "#{@current_turn.name}'s turn (#{@current_turn.color.to_s})"
+      @display.render
+      move = @display.cursor.get_input
+      if move != nil && move == moves[0]
+        input_count = 0
+        moves = []
+      elsif move != nil
+        input_count += 1
+        moves << move
+      end
+    end
+    piece = @board[moves[0]]
+    new_pos = moves[1]
+    until piece.color == @current_turn.color && piece.valid_move?(new_pos, @board)
+      moves = get_move2
+      piece = moves[0]
+      new_pos = moves[1]
+    end
+    moves[0] = piece
+    moves
+  end
+
   def get_move
     piece = select_piece
     return :save if piece == :save
@@ -129,8 +158,7 @@ class Game
     return :save if new_pos == :save
     # binding.pry
     until piece.color == @current_turn.color && piece.valid_move?(new_pos, @board)
-      system('clear')
-      @board.display
+      display_board
       puts 'Invalid move, try again!'
       piece = select_piece
       new_pos = select_pos
@@ -179,8 +207,7 @@ class Game
 
   def display_result
     switch_turn
-    system('clear')
-    @board.display
+    display_board
     puts "Last move: #{@last_move[0..1]} => #{@last_move[2..3]}"
     puts "Checkmate! #{@current_turn.name} wins!"
   end
