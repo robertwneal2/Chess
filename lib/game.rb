@@ -3,7 +3,6 @@ require_relative 'player'
 require_relative 'computer'
 require_relative 'display'
 require 'yaml'
-require 'pry-byebug'
 
 class Game
 
@@ -113,10 +112,10 @@ class Game
     if @current_turn.class == Computer
       display_board
       moves = computer_move
-      # Pause if tow computer players to see move
-      if @player1.class == Computer && @player2.class == Computer
-        # sleep(0.1)
-      end
+      # Pause if two computer players to see move
+      # if @player1.class == Computer && @player2.class == Computer
+      #   sleep(0.1)
+      # end
       return moves
     end
     moves = select_positions
@@ -152,7 +151,6 @@ class Game
   end
 
   def computer_move
-    # binding.pry
     color = @current_turn.color
     pieces = @board.board.flatten.select { |piece| piece.color == color }
     piece = pieces.sample

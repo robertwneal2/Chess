@@ -1,19 +1,6 @@
 require_relative 'pieces'
-require 'colorize'
 
 class Board 
-
-  SYMBOLS = {
-    "Bishop" => "\u265D",
-    "Knight" => "\u265E",
-    "Rook" => "\u265C",
-    "Queen" => "\u265B",
-    "King" => "\u265A",
-    "Pawn" => "\u265F",
-    "Piece" => " "
-  }
-
-  BACKGROUND_COLORS = [:light_red, :light_black]
 
   attr_reader :board
 

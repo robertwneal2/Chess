@@ -25,21 +25,13 @@ class Pawn < Piece
       end
     end
 
-    diag1_pos = [pos[0] + @dir, pos[1] + 1]
-    unless off_of_board?(diag1_pos)
-      diag1_piece = board[diag1_pos]
-
-      if diag1_piece.color != :null && diag1_piece.color != @color
-        moves << diag1_pos
-      end
-    end
-
-    diag2_pos = [pos[0] + @dir, pos[1] - 1]
-    unless off_of_board?(diag2_pos)
-      diag2_piece = board[diag2_pos]
-
-      if diag2_piece.color != :null && diag2_piece.color != @color
-        moves << diag2_pos
+    [1, -1].each do |diag_dir|
+      diag_pos = [pos[0] + @dir, pos[1] + diag_dir]
+      unless off_of_board?(diag_pos)
+        diag_piece = board[diag_pos]
+        if diag_piece.color != :null && diag_piece.color != @color
+          moves << diag_pos
+        end
       end
     end
 
