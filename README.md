@@ -3,10 +3,15 @@ Run lib/game.rb to start chess game. When asked to load a previously saved game,
 Controls:
 
 Up: Up arrow
+
 Down: Down arrow
+
 Left: Left arrow
+
 Right: Right arrow
+
 Select piece/move: Enter or Space
+
 Save game: S
 
 When saving a game, type the save file name without the extension.
