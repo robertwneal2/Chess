@@ -114,7 +114,7 @@ class Game
       moves = computer_move
       # Pause if two computer players to see move
       # if @player1.class == Computer && @player2.class == Computer
-      #   sleep(0.1)
+      #   sleep(0.5)
       # end
       return moves
     end
@@ -158,9 +158,22 @@ class Game
     until piece.valid_move?(new_pos, @board)
       piece = pieces.sample
       possible_moves = piece.possible_moves(@board)
+      other_color = other_color(color)
+      
+      # Prioiritize move that eliminates opponent
+      possible_moves.each do |move|
+        if piece.valid_move?(move, @board) && @board[move].color == other_color
+          return [piece, move]
+        end
+      end
+
       new_pos = possible_moves.sample
     end
     [piece, new_pos]
+  end
+
+  def other_color(color)
+    color == :white ? :black : :white
   end
 
   def display_board
